@@ -1,0 +1,28 @@
+{
+  "collectionName": "components_navigation_image_box_links",
+  "info": {
+    "name": "ImageBoxLink",
+    "icon": "image",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "image_200x70": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images"
+      ],
+      "plugin": "upload",
+      "required": true,
+      "pluginOptions": {}
+    }
+  }
+}

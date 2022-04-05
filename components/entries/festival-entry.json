@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_entries_festival_entries",
+  "info": {
+    "name": "festival_entry",
+    "icon": "baby-carriage",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "festival": {
+      "model": "festival"
+    },
+    "title": {
+      "type": "string",
+      "private": true
+    }
+  }
+}

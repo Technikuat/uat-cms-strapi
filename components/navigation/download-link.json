@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_navigation_download_links",
+  "info": {
+    "name": "DownloadLink",
+    "icon": "apple-alt"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "url": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_shared_teachers_slices",
+  "info": {
+    "name": "TeachersSlice",
+    "icon": "chalkboard-teacher",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "teachers": {
+      "type": "component",
+      "repeatable": true,
+      "component": "entries.teacher-entry"
+    }
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "kind": "singleType",
+  "collectionName": "footers",
+  "info": {
+    "name": "footer",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "i18n": {
+      "localized": true
+    }
+  },
+  "attributes": {
+    "footer_sections": {
+      "collection": "footer-section"
+    },
+    "contact": {
+      "type": "component",
+      "repeatable": true,
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "component": "shared.rich-text-with-title"
+    },
+    "instagram": {
+      "type": "component",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      },
+      "component": "navigation.conditional-external-link",
+      "required": true
+    },
+    "facebook": {
+      "type": "component",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      },
+      "component": "navigation.conditional-external-link",
+      "required": true
+    },
+    "youtube": {
+      "type": "component",
+      "repeatable": false,
+      "pluginOptions": {
+        "i18n": {
+          "localized": false
+        }
+      },
+      "component": "navigation.conditional-external-link",
+      "required": true
+    },
+    "school_name": {
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "type": "string",
+      "required": true
+    },
+    "school_address": {
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "type": "string"
+    }
+  }
+}

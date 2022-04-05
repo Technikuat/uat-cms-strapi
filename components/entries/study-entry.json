@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_entries_study_entries",
+  "info": {
+    "name": "study_entry",
+    "icon": "pen-fancy",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "field_of_study": {
+      "model": "field-of-study"
+    },
+    "title": {
+      "type": "string",
+      "private": true
+    }
+  }
+}

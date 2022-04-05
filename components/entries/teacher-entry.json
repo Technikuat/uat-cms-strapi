@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_entries_teacher_entries",
+  "info": {
+    "name": "teacher_entry",
+    "icon": "microscope",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "teacher": {
+      "model": "teacher"
+    },
+    "title": {
+      "type": "string",
+      "private": true
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_shared_you_tube_player_slices",
+  "info": {
+    "name": "YouTubePlayerSlice",
+    "icon": "play-circle",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "youtube_video_id": {
+      "type": "string",
+      "required": true
+    },
+    "cover_image": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images"
+      ],
+      "plugin": "upload",
+      "required": false,
+      "pluginOptions": {}
+    }
+  }
+}

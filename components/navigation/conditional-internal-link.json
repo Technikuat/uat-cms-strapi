@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_navigation_conditional_internal_links",
+  "info": {
+    "name": "ConditionalInternalLink",
+    "icon": "external-link-square-alt"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "isVisible": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    }
+  }
+}

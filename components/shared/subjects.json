@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_shared_subjects",
+  "info": {
+    "name": "Subjects",
+    "icon": "book"
+  },
+  "options": {},
+  "attributes": {
+    "header": {
+      "type": "string",
+      "required": true
+    },
+    "sections": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.subjects-section"
+    },
+    "sponsor": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.sponsor"
+    }
+  }
+}
