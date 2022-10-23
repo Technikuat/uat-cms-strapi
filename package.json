@@ -7,14 +7,17 @@
     "develop": "ENV_PATH=.env.development strapi develop",
     "start": "strapi start",
     "build": "strapi build",
-    "strapi": "strapi"
+    "strapi": "strapi",
+    "patch": "patch-package",
+    "postinstall": "patch-package"
   },
-  "devDependencies": {},
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^29.0.0",
     "@ckeditor/ckeditor5-react": "^3.0.2",
     "knex": "0.21.18",
+    "patch-package": "^6.4.7",
     "pg": "^8.7.1",
+    "postinstall-postinstall": "^2.1.0",
     "slugify": "^1.6.0",
     "sqlite3": "5.0.0",
     "strapi": "3.6.8",

@@ -1,0 +1,222 @@
+diff --git a/node_modules/strapi-plugin-content-manager/admin/src/components/DynamicZone/Component/index.js b/node_modules/strapi-plugin-content-manager/admin/src/components/DynamicZone/Component/index.js
+index 7f789bf..b1b070a 100644
+--- a/node_modules/strapi-plugin-content-manager/admin/src/components/DynamicZone/Component/index.js
++++ b/node_modules/strapi-plugin-content-manager/admin/src/components/DynamicZone/Component/index.js
+@@ -1,4 +1,4 @@
+-import React, { memo, useMemo } from 'react';
++import React, { memo, useMemo, useState } from 'react';
+ import { Arrow } from '@buffetjs/icons';
+ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+ import PropTypes from 'prop-types';
+@@ -6,18 +6,34 @@ import isEqual from 'react-fast-compare';
+ import { useContentTypeLayout } from '../../../hooks';
+ import FieldComponent from '../../FieldComponent';
+ import RoundCTA from './RoundCTA';
++import { Tooltip } from 'reactstrap';
++
++const ArrowToTop = ()=> (
++  <svg width="12" height="12" class="m-auto" viewBox="0 0 24 24">
++    <path fill="currentColor" d="M4.08,11.92L12,4L19.92,11.92L18.5,13.33L13,7.83V22H11V7.83L5.5,13.33L4.08,11.92M12,4H22V2H2V4H12Z"></path>
++  </svg>
++)
++
++const ArrowToBottom = ()=>(
++  <svg width="12" height="12" class="m-auto" viewBox="0 0 24 24">
++    <path fill="currentColor" d="M19.92,12.08L12,20L4.08,12.08L5.5,10.67L11,16.17V2H13V16.17L18.5,10.66L19.92,12.08M12,20H2V22H22V20H12Z"></path>
++  </svg>
++)
+ 
+ const Component = ({
+   componentUid,
+   index,
++  lastIndex,
+   isFieldAllowed,
+   moveComponentDown,
+   moveComponentUp,
++  moveComponentField,
+   name,
+   removeComponentFromDynamicZone,
+   showDownIcon,
+   showUpIcon,
+ }) => {
++  const [isOpen, setOpen] = useState(false)
+   const { getComponentLayout } = useContentTypeLayout();
+   const { icon, friendlyName } = useMemo(() => {
+     const {
+@@ -33,9 +49,29 @@ const Component = ({
+ 
+   const handleRemove = () => removeComponentFromDynamicZone(name, index);
+ 
++  const handleMoveToTop = () => {
++    if(!moveComponentField){
++      return
++    }
++    moveComponentField([name], index, 0)
++  }
++
++  const handleMoveToBottom = ()=>{
++    if(!moveComponentField){
++      return
++    }
++    moveComponentField([name], index, lastIndex)
++  }
++
+   return (
+     <div>
+       <div className="arrow-icons">
++        {index !== lastIndex && (
++          <RoundCTA className="arrow-btn" onClick={handleMoveToBottom}>
++            <ArrowToBottom />
++          </RoundCTA>
++        )}
++
+         {showDownIcon && (
+           <RoundCTA className="arrow-btn arrow-down" onClick={handleMoveComponentDown}>
+             <Arrow />
+@@ -46,18 +82,27 @@ const Component = ({
+             <Arrow />
+           </RoundCTA>
+         )}
++
++        {index !== 0 && (
++          <RoundCTA className="arrow-btn" onClick={handleMoveToTop}>
++            <ArrowToTop />
++          </RoundCTA>
++        )}
+       </div>
++
+       {isFieldAllowed && (
+         <RoundCTA onClick={handleRemove}>
+           <FontAwesomeIcon icon="trash-alt" />
+         </RoundCTA>
+       )}
++
+       <FieldComponent
+         componentUid={componentUid}
+         componentFriendlyName={friendlyName}
+         icon={icon}
+         label=""
+         name={`${name}.${index}`}
++        isOpen={isOpen}
+         isFromDynamicZone
+       />
+     </div>
+diff --git a/node_modules/strapi-plugin-content-manager/admin/src/components/DynamicZone/index.js b/node_modules/strapi-plugin-content-manager/admin/src/components/DynamicZone/index.js
+index 9b81486..2986da4 100644
+--- a/node_modules/strapi-plugin-content-manager/admin/src/components/DynamicZone/index.js
++++ b/node_modules/strapi-plugin-content-manager/admin/src/components/DynamicZone/index.js
+@@ -30,6 +30,7 @@ const DynamicZone = ({
+   labelIcon,
+   moveComponentUp,
+   moveComponentDown,
++  moveComponentField,
+   removeComponentFromDynamicZone,
+   dynamicDisplayedComponents,
+   fieldSchema,
+@@ -135,9 +136,11 @@ const DynamicZone = ({
+               componentUid={componentUid}
+               key={index}
+               index={index}
++              lastIndex={dynamicDisplayedComponents ? dynamicDisplayedComponents.length - 1 : 0}
+               isFieldAllowed={isFieldAllowed}
+               moveComponentDown={moveComponentDown}
+               moveComponentUp={moveComponentUp}
++              moveComponentField={moveComponentField}
+               name={name}
+               removeComponentFromDynamicZone={removeComponentFromDynamicZone}
+               showDownIcon={showDownIcon}
+diff --git a/node_modules/strapi-plugin-content-manager/admin/src/components/DynamicZone/utils/select.js b/node_modules/strapi-plugin-content-manager/admin/src/components/DynamicZone/utils/select.js
+index 956b8c1..f7c0c3a 100644
+--- a/node_modules/strapi-plugin-content-manager/admin/src/components/DynamicZone/utils/select.js
++++ b/node_modules/strapi-plugin-content-manager/admin/src/components/DynamicZone/utils/select.js
+@@ -11,6 +11,7 @@ function useSelect(name) {
+     modifiedData,
+     moveComponentUp,
+     moveComponentDown,
++    moveComponentField,
+     removeComponentFromDynamicZone,
+     readActionAllowedFields,
+     updateActionAllowedFields,
+@@ -41,6 +42,7 @@ function useSelect(name) {
+     isFieldReadable,
+     moveComponentUp,
+     moveComponentDown,
++    moveComponentField,
+     removeComponentFromDynamicZone,
+     dynamicDisplayedComponents,
+   };
+diff --git a/node_modules/strapi-plugin-content-manager/admin/src/components/FieldComponent/index.js b/node_modules/strapi-plugin-content-manager/admin/src/components/FieldComponent/index.js
+index 91d1a80..642eeaa 100644
+--- a/node_modules/strapi-plugin-content-manager/admin/src/components/FieldComponent/index.js
++++ b/node_modules/strapi-plugin-content-manager/admin/src/components/FieldComponent/index.js
+@@ -1,5 +1,5 @@
+ /* eslint-disable  import/no-cycle */
+-import React, { memo } from 'react';
++import React, { memo, useState } from 'react';
+ import PropTypes from 'prop-types';
+ import { size } from 'lodash';
+ import { FormattedMessage, useIntl } from 'react-intl';
+@@ -16,6 +16,7 @@ import ComponentIcon from './ComponentIcon';
+ import Label from './Label';
+ import Reset from './ResetComponent';
+ import Wrapper from './Wrapper';
++import { Button, ButtonToggle, Collapse } from 'reactstrap';
+ 
+ const FieldComponent = ({
+   componentFriendlyName,
+@@ -36,7 +37,9 @@ const FieldComponent = ({
+   isReadOnly,
+   componentValue,
+   removeComponentFromField,
++  // isOpen
+ }) => {
++  const [isOpen, setOpen] = useState(false)
+   const { formatMessage } = useIntl();
+   const componentValueLength = size(componentValue);
+   const isInitialized = componentValue !== null || isFromDynamicZone;
+@@ -63,10 +66,21 @@ const FieldComponent = ({
+     );
+   }
+ 
++
++  const hasCollapse = !isRepeatable && isInitialized && isFromDynamicZone
++  const handleToggleCollapse = hasCollapse ? () => setOpen(!isOpen) : undefined
++
++  const nonRepeatableComponent = (
++    <NonRepeatableComponent
++      componentUid={componentUid}
++      isFromDynamicZone={isFromDynamicZone}
++      name={name}
++    />
++  )
+   return (
+     <Wrapper className="col-12" isFromDynamicZone={isFromDynamicZone}>
+       {isFromDynamicZone && (
+-        <ComponentIcon title={componentFriendlyName}>
++        <ComponentIcon title={componentFriendlyName} onClick={handleToggleCollapse}>
+           <div className="component_name">
+             <div className="component_icon">
+               <FontAwesomeIcon icon={icon} title={componentFriendlyName} />
+@@ -101,14 +115,14 @@ const FieldComponent = ({
+       {!isRepeatable && !isInitialized && (
+         <ComponentInitializer componentUid={componentUid} name={name} isReadOnly={isReadOnly} />
+       )}
+-
+-      {!isRepeatable && isInitialized && (
+-        <NonRepeatableComponent
+-          componentUid={componentUid}
+-          isFromDynamicZone={isFromDynamicZone}
+-          name={name}
+-        />
+-      )}
++      {
++        !isRepeatable && isInitialized ?
++          hasCollapse ? (
++            <Collapse isOpen={isOpen}>
++              {nonRepeatableComponent}
++            </Collapse>
++          ): nonRepeatableComponent :null
++      }
+       {isRepeatable && (
+         <RepeatableComponent
+           componentValue={componentValue}
