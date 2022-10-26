@@ -5,18 +5,15 @@ WORKDIR /
 ARG ENV=production
 ARG PORT=1337
 
-COPY ./patches ./
-COPY ./package.json ./
-COPY ./yarn.lock ./
-
-RUN yarn install
-
 COPY . .
+
+RUN npm install
+RUN npm run patch
 
 ENV NODE_ENV ${ENV}
 
-RUN yarn build
+RUN npm run build
 
 EXPOSE ${PORT}
 
-CMD ["yarn", "start"]
+CMD ["npm", "start"]
