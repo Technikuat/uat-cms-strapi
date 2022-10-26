@@ -15,13 +15,44 @@ const newsComparator = (a, b) => {
   return dateA > dateB ? -1 : 1;
 };
 
+const parseLimits = (query) => {
+  const inl = Number(query.inl)
+  const nl = Number(query.nl)
+
+  return {
+    newsLimit: !Number.isNaN(nl) ? nl : undefined,
+    importantNewsLimit: !Number.isNaN(inl) ? inl : undefined,
+  }
+}
+
+const parseQuery = (query) => {
+  if(query.inl !== undefined){
+    delete query.inl
+  }
+
+  if(query.nl){
+    delete query.nl
+  }
+
+  return query
+}
 module.exports = {
   async find(ctx) {
-    const home = await strapi.services['home-page'].find(ctx.query);
-    const news = await strapi.services['new'].find(ctx.query);
-    const galleries = await strapi.services.galleries.find(ctx.query);
-    const galleryEvents = await strapi.services['gallery-event'].find(ctx.query);
-    const footer = await strapi.services['footer'].find(ctx.query);
+    const { newsLimit = 12, importantNewsLimit = 6 } = parseLimits(ctx.query)
+    const query = parseQuery(ctx.query)
+    const locale = query.locale || 'sk'
+
+    const home = await strapi.services['home-page'].find({ locale });
+
+    const news = await strapi.services['new'].find({ locale, _limit: newsLimit });
+    const importantNews = await strapi.services['new']
+      .find({ locale, _limit: importantNewsLimit, important_news: true });
+
+    const galleries = await strapi.services.galleries.find({ locale });
+    const galleryEvents = await strapi.services['gallery-event'].find({ locale });
+
+    const footer = await strapi.services['footer'].find({ locale });
+
     const sanitizedGalleries = sanitizeEntity((galleries || {}), { model: strapi.models['galleries'] });
     const transformedUATGalleries = home.galleries.map((item => {
       let transformed = {
@@ -37,12 +68,9 @@ module.exports = {
       ...sanitizeEntity(home, { model: strapi.models['home-page'] }),
       news: sanitizeEntity((news || [])
         .filter((item) => !item.important_news)
-        .sort(newsComparator)
-        .slice(0, 12), { model: strapi.models['new'] }),
-      importantNews: sanitizeEntity((news || [])
-        .filter((item) => item.important_news)
-        .sort(newsComparator)
-        .slice(0, 3), { model: strapi.models['new'] }),
+        .sort(newsComparator), { model: strapi.models['new'] }),
+      importantNews: sanitizeEntity((importantNews || [])
+        .sort(newsComparator), { model: strapi.models['new'] }),
       festivals: sanitizeEntity(
         (home.festivals || [])
           .map((item) => item.festival)
@@ -66,6 +94,7 @@ module.exports = {
         youtube: footerData ? footerData.youtube : null,
       },
     }
+
     return result;
   }
 };
