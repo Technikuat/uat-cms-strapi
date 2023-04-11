@@ -48,7 +48,8 @@
         "navigation.external-link",
         "navigation.internal-link",
         "navigation.download-link",
-        "shared.teachers-slice"
+        "shared.teachers-slice",
+        "shared.tabs"
       ]
     },
     "cover_image": {

@@ -1,0 +1,20 @@
+{
+  "collectionName": "components_shared_tab_item_contents",
+  "info": {
+    "name": "TabItemContent",
+    "icon": "align-left",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "richtext"
+    },
+    "links": {
+      "collection": "new"
+    }
+  }
+}
