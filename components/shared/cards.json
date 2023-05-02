@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_shared_cards",
+  "info": {
+    "name": "Cards",
+    "icon": "pager"
+  },
+  "options": {},
+  "attributes": {
+    "CardItem": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.card-item"
+    }
+  }
+}
