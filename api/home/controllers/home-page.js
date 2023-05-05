@@ -67,7 +67,7 @@ module.exports = {
     const result = {
       ...sanitizeEntity(home, { model: strapi.models['home-page'] }),
       news: sanitizeEntity((news || [])
-        .filter((item) => !item.important_news)
+        // .filter((item) => !item.important_news)
         .sort(newsComparator), { model: strapi.models['new'] }),
       importantNews: sanitizeEntity((importantNews || [])
         .sort(newsComparator), { model: strapi.models['new'] }),
