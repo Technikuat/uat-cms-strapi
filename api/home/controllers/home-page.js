@@ -44,7 +44,7 @@ module.exports = {
 
     const home = await strapi.services['home-page'].find({ locale });
 
-    const news = await strapi.services['new'].find({ locale, _limit: newsLimit });
+    const news = await strapi.services['new'].find({ locale, _limit: newsLimit, _sort: "date:ASC" });
     const importantNews = await strapi.services['new']
       .find({ locale, _limit: importantNewsLimit, important_news: true });
 
