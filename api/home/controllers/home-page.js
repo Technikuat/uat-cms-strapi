@@ -26,11 +26,11 @@ const parseLimits = (query) => {
 }
 
 const parseQuery = (query) => {
-  if(query.inl !== undefined){
+  if (query.inl !== undefined) {
     delete query.inl
   }
 
-  if(query.nl){
+  if (query.nl) {
     delete query.nl
   }
 
@@ -39,28 +39,29 @@ const parseQuery = (query) => {
 module.exports = {
   async find(ctx) {
     const { newsLimit = 12, importantNewsLimit = 6 } = parseLimits(ctx.query)
-    const query = parseQuery(ctx.query)
-    const locale = query.locale || 'sk'
+    const { _locale = 'sk' } = parseQuery(ctx.query)
 
-    const home = await strapi.services['home-page'].find({ locale });
-
-    const news = await strapi.services['new'].find({ locale, _limit: newsLimit, _sort: "date:DESC" });
+    const home = await strapi.services['home-page'].find({ _locale });
+    const news = await strapi.services['new'].find({ _locale, _limit: newsLimit, _sort: "date:DESC" });
     const importantNews = await strapi.services['new']
-      .find({ locale, _limit: importantNewsLimit, important_news: true });
+      .find({ _locale, _limit: importantNewsLimit, important_news: true });
 
-    const galleries = await strapi.services.galleries.find({ locale });
-    const galleryEvents = await strapi.services['gallery-event'].find({ locale });
-
-    const footer = await strapi.services['footer'].find({ locale });
+    const galleries = await strapi.services.galleries.find({ _locale });
+    const galleryEvents = await strapi.services['gallery-event'].find({ _locale });
+    const footer = await strapi.services['footer'].find({ _locale });
 
     const sanitizedGalleries = sanitizeEntity((galleries || {}), { model: strapi.models['galleries'] });
     const transformedUATGalleries = home.galleries.map((item => {
-      let transformed = {
-        ...item.galleries_uat,
-        image: item.galleries_uat.image_424x488,
+      if (item.galleries_uat?.image_424x488) {
+        let transformed = {
+          ...item.galleries_uat,
+          image: item.galleries_uat.image_424x488,
+        }
+        delete transformed.image_424x488;
+        return transformed;
       }
-      delete transformed.image_424x488;
-      return transformed;
+
+      return item.galleries_uat
     }));
 
     const footerData = sanitizeEntity(footer, { model: strapi.models['footer'] });
