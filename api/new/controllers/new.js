@@ -6,7 +6,7 @@ const { sanitizeEntity } = require('strapi-utils');
  * to customize this controller
  */
 
- const newsComparator = (a, b) => {
+const newsComparator = (a, b) => {
   const dateA = (new Date(a.date)).getTime();
   const dateB = (new Date(b.date)).getTime();
   if (dateA === dateB) {
@@ -16,10 +16,13 @@ const { sanitizeEntity } = require('strapi-utils');
 };
 
 module.exports = {
+  async fb(ctx) {
+    return strapi.services.new.checkFacebookID(ctx.params.id);
+  },
   async find(ctx) {
     const { year } = ctx.query;
     delete ctx.query.year;
-    
+
     const news = await strapi.services.new.find({ ...ctx.query, _limit: -1 });
     const newsMap = news.reduce((acc, item) => {
       const itemYear = item.date.split('-')[0];
@@ -28,7 +31,7 @@ module.exports = {
         [itemYear]: [...(acc[itemYear] || []), item],
       };
     }, {});
-    
+
     const years = Object.keys(newsMap).sort((a, b) => b.localeCompare(a));
     let newsData = [];
     if (newsMap[year] === undefined) {
@@ -40,7 +43,7 @@ module.exports = {
 
     const result = await Promise.all(sanitzedData.map(async (item) => {
       const transformedLocalizations = await Promise.all(item.localizations.map(async (item) => {
-        const singlePage = await strapi.services.new.findOne({ id: item.id});
+        const singlePage = await strapi.services.new.findOne({ id: item.id });
 
         return {
           ...item,
@@ -67,7 +70,7 @@ module.exports = {
           return sec;
         })
       }
-      
+
       return transformed;
     }));
     return {

@@ -68,6 +68,16 @@
       "type": "boolean",
       "default": false,
       "required": true
+    },
+    "facebook_id": {
+      "pluginOptions": {
+        "i18n": {
+          "localized": true
+        }
+      },
+      "type": "string",
+      "private": true,
+      "unique": true
     }
   }
 }

@@ -1,4 +1,5 @@
 'use strict';
+const axios = require('axios')
 
 /**
  * Cron config that gives you an opportunity
@@ -10,7 +11,19 @@
  * See more details here: https://strapi.io/documentation/developer-docs/latest/setup-deployment-guides/configurations.html#cron-tasks
  */
 
-module.exports = {
+module.exports = ({ env }) => ({
+  enabled: true,
+  // every minute
+  '* * * * *': async () => {
+    const url = env("SCRAPPER_URL", 'http://localhost:8080/fb')
+
+    try {
+      const response = await axios.post(url)
+      console.log(response.data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
   /**
    * Simple example.
    * Every monday at 1am.
@@ -18,4 +31,5 @@ module.exports = {
   // '0 1 * * 1': () => {
   //
   // }
-};
+})
+
