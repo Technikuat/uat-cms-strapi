@@ -11,15 +11,12 @@ const axios = require('axios')
  * See more details here: https://strapi.io/documentation/developer-docs/latest/setup-deployment-guides/configurations.html#cron-tasks
  */
 
-module.exports = ({ env }) => ({
-  enabled: true,
-  // every minute
-  '* * * * *': async () => {
-    const url = env("SCRAPPER_URL", 'http://localhost:8080/fb')
-
+module.exports = {
+  // every day at 1 am
+  '0 1 * * * *': async () => {
+    const url = strapi?.config?.server?.cron?.scrapperUrl || process.env.SCRAPPER_URL || "http://scrapper:8080/fb"
     try {
-      const response = await axios.post(url)
-      console.log(response.data)
+      await axios.post(url)
     } catch (err) {
       console.log(err)
     }
@@ -31,5 +28,5 @@ module.exports = ({ env }) => ({
   // '0 1 * * 1': () => {
   //
   // }
-})
+}
 
