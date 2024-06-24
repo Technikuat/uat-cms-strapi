@@ -25,6 +25,14 @@
       }
     },
     {
+      "method": "GET",
+      "path": "/news/fb/:id",
+      "handler": "new.fb",
+      "config": {
+        "policies": []
+      }
+    },
+    {
       "method": "POST",
       "path": "/news",
       "handler": "new.create",
